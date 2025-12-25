@@ -66,14 +66,14 @@ cp .env.example .env
 ### Utilisation
 
 ```bash
-# Lancer l'interface CLI
-python -m lotusette.cli
+# Lancer l'interface CLI (à venir)
+python -m lotusette.ui.cli
 
-# Lancer le serveur API
-python -m lotusette.api
+# Lancer le serveur API (à venir)
+python -m lotusette.api.main
 
-# Lancer l'interface web
-python -m lotusette.ui.web
+# Lancer l'interface web (à venir)
+# python -m lotusette.ui.web
 ```
 
 ## 📚 Documentation

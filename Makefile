@@ -48,7 +48,7 @@ clean:
 	rm -rf build dist .pytest_cache .coverage htmlcov .mypy_cache
 
 run:
-	python -m lotusette.cli
+	python -m lotusette.ui.cli
 
 api:
 	uvicorn lotusette.api.main:app --reload --host 0.0.0.0 --port 8000

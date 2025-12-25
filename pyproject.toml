@@ -59,7 +59,7 @@ Repository = "https://github.com/MrrL0tus/Lotusette"
 Issues = "https://github.com/MrrL0tus/Lotusette/issues"
 
 [project.scripts]
-lotusette = "lotusette.cli:main"
+lotusette = "lotusette.ui.cli:main"
 
 [tool.setuptools]
 packages = ["lotusette"]
