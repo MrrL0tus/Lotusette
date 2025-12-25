@@ -1,9 +1,10 @@
 """Test fixtures and utilities."""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from lotusette.core.llm import Message, LLMResponse
+import pytest
+
+from lotusette.core.llm import LLMResponse, Message
 
 
 @pytest.fixture
@@ -20,10 +21,7 @@ def sample_messages():
 def mock_llm_response():
     """Mock LLM response."""
     return LLMResponse(
-        content="This is a test response",
-        model="test-model",
-        tokens_used=50,
-        finish_reason="stop"
+        content="This is a test response", model="test-model", tokens_used=50, finish_reason="stop"
     )
 
 

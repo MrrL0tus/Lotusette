@@ -1,9 +1,9 @@
 """Memory module initialization."""
 
 from .base import BaseMemory, ConversationMessage
-from .short_term import ShortTermMemory
 from .long_term import LongTermMemory
 from .models import ConversationModel, init_db
+from .short_term import ShortTermMemory
 
 __all__ = [
     "BaseMemory",
