@@ -1,0 +1,102 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lotusette"
+version = "0.1.0"
+description = "An evolving AI conversational assistant inspired by Neuro-sama"
+authors = [{name = "MrrL0tus", email = ""}]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+keywords = ["ai", "chatbot", "assistant", "voice", "llm", "neuro-sama"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "openai>=1.0.0",
+    "anthropic>=0.7.0",
+    "langchain>=0.1.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "sqlalchemy>=2.0.0",
+    "redis>=5.0.0",
+    "chromadb>=0.4.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.11.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+]
+voice = [
+    "openai-whisper>=20231117",
+    "TTS>=0.20.0",
+    "sounddevice>=0.4.6",
+]
+gaming = [
+    "pyautogui>=0.9.54",
+    "opencv-python>=4.8.0",
+    "stable-baselines3>=2.1.0",
+]
+all = ["lotusette[dev,voice,gaming]"]
+
+[project.urls]
+Homepage = "https://github.com/MrrL0tus/Lotusette"
+Documentation = "https://github.com/MrrL0tus/Lotusette/tree/main/docs"
+Repository = "https://github.com/MrrL0tus/Lotusette"
+Issues = "https://github.com/MrrL0tus/Lotusette/issues"
+
+[project.scripts]
+lotusette = "lotusette.ui.cli:main"
+
+[tool.setuptools]
+packages = ["lotusette"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --cov=lotusette --cov-report=html --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["lotusette"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
