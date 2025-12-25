@@ -1,7 +1,14 @@
 """Configuration management for Lotusette."""
 
+import os
+from pathlib import Path
 from typing import Optional
 from pydantic_settings import BaseSettings
+
+
+# Get the project root directory
+PROJECT_ROOT = Path(__file__).parent.parent.parent.absolute()
+DATA_DIR = PROJECT_ROOT / "lotusette" / "data"
 
 
 class Settings(BaseSettings):
@@ -20,7 +27,7 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-3-opus-20240229"
     
     # Database
-    database_url: str = "sqlite:///lotusette/data/conversations/lotusette.db"
+    database_url: str = f"sqlite:///{DATA_DIR / 'conversations' / 'lotusette.db'}"
     vector_db_type: str = "chroma"
     vector_db_url: str = "http://localhost:8000"
     
@@ -44,7 +51,7 @@ class Settings(BaseSettings):
     enable_robotics: bool = False
     
     # Security
-    secret_key: str = "your-secret-key-here-change-this-in-production"
+    secret_key: str = "CHANGE-THIS-SECRET-KEY-IN-PRODUCTION-USE-ENV-FILE"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     
@@ -66,7 +73,20 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+    
+    def validate_security(self) -> None:
+        """Validate security settings."""
+        if not self.debug and self.secret_key.startswith("CHANGE-THIS"):
+            raise ValueError(
+                "SECRET_KEY must be set to a secure random value in production. "
+                "Set it in your .env file or environment variables."
+            )
 
 
 # Global settings instance
 settings = Settings()
+
+# Create data directories if they don't exist
+os.makedirs(DATA_DIR / "conversations", exist_ok=True)
+os.makedirs(DATA_DIR / "models", exist_ok=True)
+os.makedirs(DATA_DIR / "embeddings", exist_ok=True)

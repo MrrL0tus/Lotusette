@@ -54,7 +54,7 @@ all = ["lotusette[dev,voice,gaming]"]
 
 [project.urls]
 Homepage = "https://github.com/MrrL0tus/Lotusette"
-Documentation = "https://github.com/MrrL0tus/Lotusette/docs"
+Documentation = "https://github.com/MrrL0tus/Lotusette/tree/main/docs"
 Repository = "https://github.com/MrrL0tus/Lotusette"
 Issues = "https://github.com/MrrL0tus/Lotusette/issues"
 
