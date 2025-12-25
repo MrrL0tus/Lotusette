@@ -18,7 +18,7 @@ class ConversationModel(Base):
     session_id = Column(String(255), nullable=False, index=True)
     role = Column(String(50), nullable=False)  # user, assistant, system
     content = Column(Text, nullable=False)
-    timestamp = Column(DateTime, default=datetime.now, nullable=False)
+    timestamp = Column(DateTime, default=lambda: datetime.now(), nullable=False)
 
     def __repr__(self):
         return f"<Conversation(id={self.id}, session={self.session_id}, role={self.role})>"

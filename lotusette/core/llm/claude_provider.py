@@ -69,7 +69,9 @@ class ClaudeProvider(BaseLLM):
             response = await self.client.messages.create(**kwargs)
 
             # Extract text content from response
-            content = response.content[0].text if response.content else ""
+            content = (
+                response.content[0].text if response.content and len(response.content) > 0 else ""
+            )
             tokens_used = response.usage.input_tokens + response.usage.output_tokens
             finish_reason = response.stop_reason
 

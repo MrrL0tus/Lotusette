@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 class LotusetteCLI:
     """Main CLI application for Lotusette."""
 
+    DEFAULT_CONTEXT_MESSAGES = 20
+
     def __init__(self):
         """Initialize the CLI."""
         self.session_id = str(uuid4())
@@ -187,7 +189,9 @@ class LotusetteCLI:
             await self.long_term_memory.add_message("user", user_input, self.session_id)
 
             # Get conversation context
-            context = await self.short_term_memory.get_context(self.session_id, max_messages=20)
+            context = await self.short_term_memory.get_context(
+                self.session_id, max_messages=self.DEFAULT_CONTEXT_MESSAGES
+            )
 
             # Convert to Message objects
             messages = [Message(role=msg["role"], content=msg["content"]) for msg in context]

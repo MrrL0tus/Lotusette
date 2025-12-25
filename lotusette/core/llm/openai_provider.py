@@ -55,9 +55,9 @@ class OpenAIProvider(BaseLLM):
                 max_tokens=self.max_tokens,
             )
 
-            content = response.choices[0].message.content
+            content = response.choices[0].message.content or ""
             tokens_used = response.usage.total_tokens if response.usage else None
-            finish_reason = response.choices[0].finish_reason
+            finish_reason = response.choices[0].finish_reason or "unknown"
 
             logger.debug(f"Received response, tokens used: {tokens_used}")
 
