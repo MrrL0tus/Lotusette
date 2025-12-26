@@ -40,11 +40,27 @@ lotusette/
 ## 🚀 Démarrage rapide
 
 ### Prérequis
-- Python 3.10 ou supérieur
+- Python 3.10 ou 3.11 (⚠️ **Python 3.13 n'est pas supporté** - voir solution Docker ci-dessous)
 - pip ou poetry pour la gestion des dépendances
 - (Optionnel) GPU pour les modèles locaux
 
-### Installation
+### ⚠️ Problème avec Python 3.13 ?
+
+Si vous avez Python 3.13, utilisez Docker pour garantir la compatibilité:
+
+```bash
+# Installation avec Docker (recommandé)
+git clone https://github.com/MrrL0tus/Lotusette.git
+cd Lotusette
+chmod +x docker-helper.sh
+./docker-helper.sh build
+./docker-helper.sh start
+./docker-helper.sh cli
+```
+
+📖 **Guide complet**: [archive/docker_setup.md](archive/docker_setup.md)
+
+### Installation manuelle (Python 3.10 ou 3.11)
 
 ```bash
 # Cloner le dépôt
@@ -78,20 +94,43 @@ python -m lotusette.api.main
 
 ## 📚 Documentation
 
+### 📖 Guides dans [archive/](archive/)
+
+**Nouveau !** Documentation complète pour démarrer avec Lotusette:
+
+1. **[Guide de Démarrage IA](archive/getting_started_ai.md)** - Votre première IA en 5 étapes
+   - Pour les débutants qui créent leur première IA
+   - Concepts fondamentaux expliqués simplement
+   - Exemples de code complets
+
+2. **[Guide Docker](archive/docker_setup.md)** - Solution pour Python 3.13
+   - Résout les problèmes de compatibilité
+   - Configuration Docker complète
+   - Commandes et dépannage
+
+3. **[Guide Modèles Locaux](archive/local_models_guide.md)** - IA sans cloud
+   - Utiliser des modèles HuggingFace localement
+   - Deux options: vLLM et Transformers
+   - Configuration matérielle et optimisation
+
+### 📋 Documentation générale
+
 - [ROADMAP.md](ROADMAP.md) - Feuille de route détaillée du projet
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) - Architecture technique (à venir)
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Guide de contribution (à venir)
-- [docs/](docs/) - Documentation technique détaillée (à venir)
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture technique
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Guide de contribution
+- [docs/](docs/) - Documentation technique détaillée
 
 ## 🛠️ Technologies
 
 **Core**
-- Python 3.10+
+- Python 3.10-3.11 (⚠️ 3.13 non supporté - utilisez Docker)
 - FastAPI (API backend)
 - PostgreSQL (base de données)
+- Docker (environnement isolé)
 
 **AI/ML**
-- OpenAI API / Claude (LLM)
+- OpenAI API / Claude (LLM cloud)
+- **Nouveau !** Modèles locaux HuggingFace (vLLM, Transformers)
 - LangChain (framework)
 - Whisper (STT)
 - Coqui TTS (TTS)

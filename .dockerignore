@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation temporaire
+*.md~
+*.tmp
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Data et modèles (ne pas inclure dans l'image)
+data/
+*.pth
+*.bin
+*.safetensors
+*.gguf
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
