@@ -102,7 +102,7 @@ case "${1:-help}" in
     
     clean)
         echo "🧹 Nettoyage des containers et volumes..."
-        read -p "⚠️  Cela supprimera tous les données! Continuer? (y/N) " -n 1 -r
+        read -p "⚠️  Cela supprimera toutes les données! Continuer? (y/N) " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             $COMPOSE_CMD down -v

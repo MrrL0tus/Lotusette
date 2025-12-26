@@ -135,7 +135,7 @@ class LocalTransformersProvider(BaseLLM):
             
             return LLMResponse(
                 content=full_response,
-                model=self.model.config._name_or_path,
+                model=self.model_name,
                 finish_reason="stop",
             )
         
