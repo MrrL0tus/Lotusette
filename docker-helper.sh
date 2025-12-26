@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script helper pour Docker - Construction et démarrage
 
-set -e
+set -euo pipefail
 
 echo "🚀 Lotusette Docker Helper"
 echo "=========================="

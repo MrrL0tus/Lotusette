@@ -21,6 +21,7 @@ Démarrage d'un serveur vLLM:
 Pour plus d'infos: https://docs.vllm.ai/
 """
 
+import json
 import logging
 from typing import AsyncIterator, List, Optional
 
@@ -190,7 +191,6 @@ class LocalVLLMProvider(BaseLLM):
                                 break
                             
                             try:
-                                import json
                                 chunk_data = json.loads(data_str)
                                 
                                 # Extraire le contenu du delta

@@ -11,11 +11,11 @@ Exemples de modèles compatibles:
 """
 
 import logging
+from threading import Thread
 from typing import AsyncIterator, List, Optional
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
-from threading import Thread
 
 from .base import BaseLLM, LLMResponse, Message
 
@@ -47,6 +47,9 @@ class LocalTransformersProvider(BaseLLM):
             load_in_4bit: Load model in 4-bit precision (requires bitsandbytes)
         """
         super().__init__(model, temperature, max_tokens)
+        
+        # Sauvegarder le nom du modèle pour référence
+        self.model_name = model
         
         # Déterminer le device
         if device is None:
@@ -164,7 +167,7 @@ class LocalTransformersProvider(BaseLLM):
         
         return LLMResponse(
             content=response_text.strip(),
-            model=self.model.config._name_or_path,
+            model=self.model_name,
             tokens_used=len(outputs[0]),
             finish_reason="stop",
         )
