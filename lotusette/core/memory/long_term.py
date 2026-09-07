@@ -22,7 +22,7 @@ class LongTermMemory(BaseMemory):
         """
         self.database_url = database_url
         self.engine, self.SessionLocal = init_db(database_url)
-        logger.info(f"Initialized long-term memory with database: {database_url}")
+        logger.debug(f"Initialized long-term memory with database: {database_url}")
 
     def _get_session(self) -> Session:
         """Get a database session."""

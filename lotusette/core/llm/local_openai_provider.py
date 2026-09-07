@@ -66,8 +66,8 @@ class LocalOpenAIProvider(BaseLLM):
             sock_read=sock_read_timeout,
         )
 
-        logger.info(f"Initializing local LLM provider with model: {model}")
-        logger.info(f"Server URL: {self.base_url}")
+        logger.debug(f"Initializing local LLM provider with model: {model}")
+        logger.debug(f"Server URL: {self.base_url}")
 
     @property
     def _headers(self) -> dict:

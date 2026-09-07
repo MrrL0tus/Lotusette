@@ -48,14 +48,14 @@ class LLMFactory:
 
         if provider_name == "openai":
             model = model or "gpt-4-turbo-preview"
-            logger.info(f"Creating OpenAI provider with model: {model}")
+            logger.debug(f"Creating OpenAI provider with model: {model}")
             return OpenAIProvider(
                 api_key=api_key, model=model, temperature=temperature, max_tokens=max_tokens
             )
 
         elif provider_name == "claude":
             model = model or "claude-3-opus-20240229"
-            logger.info(f"Creating Claude provider with model: {model}")
+            logger.debug(f"Creating Claude provider with model: {model}")
             return ClaudeProvider(
                 api_key=api_key, model=model, temperature=temperature, max_tokens=max_tokens
             )
@@ -67,8 +67,8 @@ class LLMFactory:
                 raise ValueError("Model name is required for the local provider")
 
             base_url = kwargs.get("base_url", "http://localhost:8080/v1")
-            logger.info(f"Creating local LLM provider with model: {model}")
-            logger.info(f"Server URL: {base_url}")
+            logger.debug(f"Creating local LLM provider with model: {model}")
+            logger.debug(f"Server URL: {base_url}")
 
             return LocalOpenAIProvider(
                 model=model,
