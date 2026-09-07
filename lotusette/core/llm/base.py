@@ -1,8 +1,8 @@
 """Base LLM interface for Lotusette."""
 
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
-from typing import AsyncIterator, Dict, List, Optional
 
 
 @dataclass
@@ -12,7 +12,7 @@ class Message:
     role: str  # 'system', 'user', 'assistant'
     content: str
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> dict[str, str]:
         """Convert message to dictionary format."""
         return {"role": self.role, "content": self.content}
 
@@ -23,8 +23,8 @@ class LLMResponse:
 
     content: str
     model: str
-    tokens_used: Optional[int] = None
-    finish_reason: Optional[str] = None
+    tokens_used: int | None = None
+    finish_reason: str | None = None
 
 
 class BaseLLM(ABC):
@@ -43,7 +43,7 @@ class BaseLLM(ABC):
         self.max_tokens = max_tokens
 
     @abstractmethod
-    async def generate(self, messages: List[Message], stream: bool = False) -> LLMResponse:
+    async def generate(self, messages: list[Message], stream: bool = False) -> LLMResponse:
         """Generate a response from the LLM.
 
         Args:
@@ -56,7 +56,7 @@ class BaseLLM(ABC):
         pass
 
     @abstractmethod
-    async def generate_stream(self, messages: List[Message]) -> AsyncIterator[str]:
+    async def generate_stream(self, messages: list[Message]) -> AsyncIterator[str]:
         """Generate a streaming response from the LLM.
 
         Args:

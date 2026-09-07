@@ -1,7 +1,5 @@
 """Unit tests for prompt manager."""
 
-import pytest
-
 from lotusette.core.llm import PromptManager
 
 

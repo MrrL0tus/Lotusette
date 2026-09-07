@@ -1,7 +1,7 @@
 """Anthropic Claude LLM provider implementation."""
 
 import logging
-from typing import AsyncIterator, List, Optional
+from collections.abc import AsyncIterator
 
 from anthropic import AnthropicError, AsyncAnthropic
 
@@ -32,7 +32,7 @@ class ClaudeProvider(BaseLLM):
         self.client = AsyncAnthropic(api_key=api_key)
         logger.info(f"Initialized Claude provider with model: {model}")
 
-    async def generate(self, messages: List[Message], stream: bool = False) -> LLMResponse:
+    async def generate(self, messages: list[Message], stream: bool = False) -> LLMResponse:
         """Generate a response using Claude API.
 
         Args:
@@ -91,7 +91,7 @@ class ClaudeProvider(BaseLLM):
             logger.error(f"Unexpected error in Claude provider: {e}")
             raise
 
-    async def generate_stream(self, messages: List[Message]) -> AsyncIterator[str]:
+    async def generate_stream(self, messages: list[Message]) -> AsyncIterator[str]:
         """Generate a streaming response using Claude API.
 
         Args:

@@ -1,12 +1,11 @@
 """Prompt management for system prompts and templates."""
 
-from typing import Optional
-
 
 class PromptManager:
     """Manages system prompts and prompt templates for Lotusette."""
 
-    DEFAULT_SYSTEM_PROMPT = """Tu es Lotusette, une assistante IA conversationnelle inspirée de Neuro-sama.
+    DEFAULT_SYSTEM_PROMPT = """\
+Tu es Lotusette, une assistante IA conversationnelle inspirée de Neuro-sama.
 
 Caractéristiques de ta personnalité:
 - Tu es amicale, curieuse et enjouée
@@ -24,7 +23,7 @@ Instructions:
 
 Commence chaque nouvelle conversation avec enthousiasme!"""
 
-    def __init__(self, custom_system_prompt: Optional[str] = None):
+    def __init__(self, custom_system_prompt: str | None = None):
         """Initialize the prompt manager.
 
         Args:

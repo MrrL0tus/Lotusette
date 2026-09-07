@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "lotusette"
 version = "0.1.0"
 description = "An evolving AI conversational assistant inspired by Neuro-sama"
-authors = [{name = "MrrL0tus", email = ""}]
+authors = [{name = "MrrL0tus"}]
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -19,38 +19,65 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
+# Doit rester aligné sur requirements.txt : uniquement ce qu'importe le code.
 dependencies = [
     "openai>=1.0.0",
     "anthropic>=0.7.0",
-    "langchain>=0.1.0",
-    "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0",
+    "aiohttp>=3.9.0",
     "sqlalchemy>=2.0.0",
-    "redis>=5.0.0",
-    "chromadb>=0.4.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
     "python-dotenv>=1.0.0",
+    "rich>=13.7.0",
+    "click>=8.1.7",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
-    "black>=23.11.0",
-    "isort>=5.12.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "ruff>=0.6.0",
     "mypy>=1.7.0",
 ]
+# Étape E6. Piper remplace Coqui TTS, sous licence CPML non commerciale et
+# seule dépendance qui imposait Python < 3.12. faster-whisper remplace
+# openai-whisper (pas de torch, plus rapide à charge égale).
 voice = [
-    "openai-whisper>=20231117",
-    "TTS>=0.20.0",
+    "piper-tts>=1.2.0",
+    "faster-whisper>=1.0.0",
     "sounddevice>=0.4.6",
+    "soundfile>=0.12.1",
+]
+# Étape E7.
+web = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "websockets>=12.0",
+]
+# Étape E5. httpx + trafilatura remplacent selenium + beautifulsoup4.
+tools = [
+    "httpx>=0.27.0",
+    "trafilatura>=1.8.0",
+    "ddgs>=9.0.0",
+    "asteval>=1.0.0",
+]
+# Étape E4.
+memory = [
+    "fastembed>=0.3.0",
+    "sqlite-vec>=0.1.0",
 ]
 gaming = [
     "pyautogui>=0.9.54",
     "opencv-python>=4.8.0",
+    "gymnasium>=0.29.0",
     "stable-baselines3>=2.1.0",
 ]
-all = ["lotusette[dev,voice,gaming]"]
+all = ["lotusette[dev,voice,web,tools,memory,gaming]"]
 
 [project.urls]
 Homepage = "https://github.com/MrrL0tus/Lotusette"
@@ -61,18 +88,16 @@ Issues = "https://github.com/MrrL0tus/Lotusette/issues"
 [project.scripts]
 lotusette = "lotusette.ui.cli:main"
 
-[tool.setuptools]
-packages = ["lotusette"]
+[tool.setuptools.packages.find]
+include = ["lotusette*"]
 
-[tool.black]
+[tool.ruff]
 line-length = 100
-target-version = ['py310', 'py311']
-include = '\.pyi?$'
+target-version = "py310"
 
-[tool.isort]
-profile = "black"
-line_length = 100
-multi_line_output = 3
+[tool.ruff.lint]
+# E/W pycodestyle, F pyflakes, I isort, UP pyupgrade, B bugbear.
+select = ["E", "W", "F", "I", "UP", "B"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -86,7 +111,10 @@ testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"
-addopts = "-v --cov=lotusette --cov-report=html --cov-report=term-missing"
+asyncio_mode = "strict"
+# La couverture n'est pas dans addopts : `pytest` doit fonctionner sans
+# pytest-cov installé. Utiliser `make coverage` pour le rapport.
+addopts = "-v"
 
 [tool.coverage.run]
 source = ["lotusette"]

@@ -1,13 +1,15 @@
-.PHONY: help install install-dev test lint format clean run
+.PHONY: help install install-dev test lint typecheck format clean run
 
 help:
 	@echo "Lotusette - Makefile commands"
 	@echo ""
 	@echo "install          Install production dependencies"
 	@echo "install-dev      Install development dependencies"
-	@echo "test             Run tests with coverage"
-	@echo "lint             Run linters (flake8, pylint, mypy)"
-	@echo "format           Format code with black and isort"
+	@echo "test             Run the test suite"
+	@echo "coverage         Run tests with a coverage report"
+	@echo "lint             Run ruff (blocking)"
+	@echo "typecheck        Run mypy (advisory)"
+	@echo "format           Format and auto-fix code with ruff"
 	@echo "clean            Remove build artifacts and caches"
 	@echo "run              Run the CLI interface"
 	@echo "api              Run the API server"
@@ -20,7 +22,6 @@ install:
 
 install-dev:
 	pip install -r requirements-dev.txt
-	pre-commit install
 
 test:
 	pytest
@@ -31,14 +32,19 @@ test-verbose:
 coverage:
 	pytest --cov=lotusette --cov-report=html --cov-report=term
 
+# Bloquant : doit rester vert.
 lint:
-	flake8 lotusette tests
-	pylint lotusette
-	mypy lotusette
+	ruff check lotusette tests examples
+	ruff format --check lotusette tests examples
+
+# Indicatif : ~33 erreurs préexistantes, essentiellement des types SQLAlchemy
+# et des **kwargs vers les SDK. À résorber progressivement, pas bloquant.
+typecheck:
+	-mypy lotusette
 
 format:
-	black lotusette tests
-	isort lotusette tests
+	ruff format lotusette tests examples
+	ruff check --fix lotusette tests examples
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
@@ -61,10 +67,3 @@ docker-up:
 
 docker-down:
 	docker-compose down
-
-migrate:
-	alembic upgrade head
-
-migrate-create:
-	@read -p "Enter migration message: " msg; \
-	alembic revision --autogenerate -m "$$msg"

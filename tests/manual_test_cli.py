@@ -4,12 +4,10 @@
 import asyncio
 import os
 import sys
-from unittest.mock import AsyncMock, MagicMock
 
 # Add parent directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from lotusette.core.llm import LLMResponse
 from lotusette.ui.cli import LotusetteCLI
 
 
