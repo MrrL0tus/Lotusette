@@ -1,50 +1,56 @@
 # Exemples Lotusette
 
-Ce dossier contient des exemples d'utilisation de Lotusette.
-
 ## 📚 Exemples disponibles
 
 ### [local_models_example.py](local_models_example.py)
-Démontre l'utilisation des modèles LLM locaux avec Lotusette.
 
-**Fonctionnalités démontrées:**
-- Utilisation du provider `local-transformers` avec un modèle HuggingFace
-- Génération de réponses
-- Création de conversations
+Utilisation du provider LLM local, en génération classique puis en flux.
 
-**Utilisation:**
+**Ce que ça démontre :**
+- Création du provider `local` via `LLMFactory`
+- Génération complète avec `generate()`
+- Génération au fil de l'eau avec `generate_stream()`
+- Mesure du temps jusqu'au premier token et du débit
+
+**Prérequis :**
+- Lotusette installé : `pip install -e .`
+- Un serveur d'inférence compatible OpenAI qui tourne en face
+
+**Utilisation :**
+
 ```bash
-# Avec Docker (recommandé)
-./docker-helper.sh shell
-python examples/local_models_example.py
+# 1. Démarrer le serveur d'inférence
+llama-server -hf mistralai/Ministral-3-3B-Instruct-2512-GGUF:Q4_K_M \
+  -c 8192 --port 8080 --host 127.0.0.1
 
-# Sans Docker
+# 2. Lancer l'exemple
 python examples/local_models_example.py
 ```
 
-**Prérequis:**
-- Python 3.11 (ou Docker)
-- Dépendances installées: `torch`, `transformers`, `accelerate`
-- GPU recommandé (mais fonctionne sur CPU)
+Le serveur et le modèle se surchargent par variables d'environnement :
+
+```bash
+LOCAL_LLM_BASE_URL=http://autre-machine:8080/v1 \
+LOCAL_LLM_MODEL=qwen3-8b \
+python examples/local_models_example.py
+```
+
+Voir [docs/MODELS.md](../docs/MODELS.md) pour le choix du modèle selon la machine.
 
 ## 🚀 Ajouter vos propres exemples
 
-Pour contribuer avec vos propres exemples:
-
-1. Créez un nouveau fichier Python dans ce dossier
-2. Ajoutez une docstring claire en haut du fichier
-3. Documentez l'exemple dans ce README
-4. Assurez-vous que le code est bien commenté
+1. Créez un fichier Python dans ce dossier
+2. Ajoutez une docstring expliquant le prérequis et la commande de lancement
+3. Documentez-le dans ce README
+4. Vérifiez qu'il passe `make lint`
 
 ## 💡 Idées d'exemples futurs
 
-- Utilisation avec l'API REST
-- Intégration de la mémoire à long terme
-- Utilisation de la voix (STT/TTS)
-- Création d'un chatbot avec personnalité personnalisée
-- Utilisation de RAG avec ChromaDB
-- Fine-tuning d'un modèle local
+- Reprise d'une conversation depuis la mémoire long terme (étape E3)
+- Recherche sémantique dans l'historique (étape E4)
+- Appel d'outils depuis le modèle (étape E5)
+- Utilisation de l'API REST (étape E7)
 
 ---
 
-Pour plus d'informations, consultez la [documentation principale](../archive/).
+Documentation principale : [../README.md](../README.md)

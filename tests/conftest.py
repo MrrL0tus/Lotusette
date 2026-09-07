@@ -1,6 +1,6 @@
 """Test fixtures and utilities."""
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 
 import pytest
 

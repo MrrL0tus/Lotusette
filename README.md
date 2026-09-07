@@ -32,128 +32,144 @@ lotusette/
 ├── gaming/            # Capacités de jeu et RL
 ├── robotics/          # Interface robotique (futur)
 ├── api/               # API REST/WebSocket
-├── ui/                # Interfaces utilisateur
-├── data/              # Données et modèles
-└── tests/             # Tests
+└── ui/                # Interfaces utilisateur
+
+data/                  # Données et modèles (hors package)
+tests/                 # Tests
 ```
 
 ## 🚀 Démarrage rapide
 
 ### Prérequis
-- Python 3.10 ou 3.11 (⚠️ **Python 3.13 n'est pas supporté** - voir solution Docker ci-dessous)
-- pip ou poetry pour la gestion des dépendances
-- (Optionnel) GPU pour les modèles locaux
 
-### ⚠️ Problème avec Python 3.13 ?
+- Python 3.10 ou plus récent (3.13 inclus)
+- `pip`
+- Pour le mode local : un serveur d'inférence compatible OpenAI
+  ([llama.cpp](https://github.com/ggml-org/llama.cpp) ou
+  [Ollama](https://ollama.com)). Aucun GPU n'est obligatoire.
 
-Si vous avez Python 3.13, utilisez Docker pour garantir la compatibilité:
+Aucune clé d'API n'est nécessaire en mode local.
 
-```bash
-# Installation avec Docker (recommandé)
-git clone https://github.com/MrrL0tus/Lotusette.git
-cd Lotusette
-chmod +x docker-helper.sh
-./docker-helper.sh build
-./docker-helper.sh start
-./docker-helper.sh cli
-```
-
-📖 **Guide complet**: [archive/docker_setup.md](archive/docker_setup.md)
-
-### Installation manuelle (Python 3.10 ou 3.11)
+### Installation
 
 ```bash
-# Cloner le dépôt
 git clone https://github.com/MrrL0tus/Lotusette.git
 cd Lotusette
 
-# Créer un environnement virtuel
 python -m venv venv
-source venv/bin/activate  # Sur Windows: venv\Scripts\activate
+source venv/bin/activate          # Windows : venv\Scripts\activate
 
-# Installer les dépendances
-pip install -r requirements.txt
+pip install -r requirements.txt   # ~30 s, environ 230 Mo
 
-# Configurer les variables d'environnement
-cp .env.example .env
-# Éditer .env avec vos clés API
+cp .env.example .env              # fonctionne tel quel, rien à remplir
 ```
+
+Les extras optionnels s'installent à la demande :
+
+```bash
+pip install -e ".[dev]"     # tests et outils de qualité
+pip install -e ".[voice]"   # étape E6, pas encore implémenté
+```
+
+### Lancer un modèle en local
+
+Installez llama.cpp, puis démarrez le serveur. `-hf` télécharge le modèle
+directement depuis Hugging Face :
+
+```bash
+# Machine avec 12 Go de VRAM ou plus
+llama-server -hf mistralai/Ministral-3-14B-Instruct-2512-GGUF:Q4_K_M \
+  -c 16384 --port 8080 --host 127.0.0.1
+
+# Machine plus modeste (6 Go de VRAM, ou CPU seul)
+llama-server -hf mistralai/Ministral-3-3B-Instruct-2512-GGUF:Q4_K_M \
+  -c 8192 --port 8080 --host 127.0.0.1
+```
+
+Vérifiez que le serveur répond :
+
+```bash
+curl http://localhost:8080/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"local","messages":[{"role":"user","content":"salut"}]}'
+```
+
+📖 Choix du modèle selon votre machine : [docs/MODELS.md](docs/MODELS.md)
 
 ### Utilisation
 
 ```bash
-# Lancer l'interface CLI (à venir)
 python -m lotusette.ui.cli
+```
 
-# Lancer le serveur API (à venir)
-python -m lotusette.api.main
+La réponse s'affiche au fil de la génération. `Ctrl-C` interrompt une réponse
+en cours sans quitter l'application.
 
-# Lancer l'interface web (à venir)
-# python -m lotusette.ui.web
+### Utiliser une API distante à la place
+
+```bash
+# .env
+LLM_PROVIDER=openai        # ou claude
+OPENAI_API_KEY=sk-...
+```
+
+### Docker (optionnel)
+
+Docker avait été ajouté pour contourner une dépendance qui imposait
+Python < 3.12. Cette dépendance a été retirée : l'installation locale
+fonctionne désormais sur toutes les versions supportées, et Docker n'est plus
+qu'une commodité.
+
+```bash
+./docker-helper.sh build && ./docker-helper.sh cli
 ```
 
 ## 📚 Documentation
 
-### 📖 Guides dans [archive/](archive/)
+- [docs/MODELS.md](docs/MODELS.md) — choix du modèle local selon la machine
+- [ROADMAP.md](ROADMAP.md) — feuille de route en 6 phases
+- [ARCHITECTURE.md](ARCHITECTURE.md) — architecture technique (cible à long terme)
+- [CONTRIBUTING.md](CONTRIBUTING.md) — guide de contribution
+- [docs/phase1.md](docs/phase1.md) — état détaillé de la phase 1
 
-**Nouveau !** Documentation complète pour démarrer avec Lotusette:
-
-1. **[Guide de Démarrage IA](archive/getting_started_ai.md)** - Votre première IA en 5 étapes
-   - Pour les débutants qui créent leur première IA
-   - Concepts fondamentaux expliqués simplement
-   - Exemples de code complets
-
-2. **[Guide Docker](archive/docker_setup.md)** - Solution pour Python 3.13
-   - Résout les problèmes de compatibilité
-   - Configuration Docker complète
-   - Commandes et dépannage
-
-3. **[Guide Modèles Locaux](archive/local_models_guide.md)** - IA sans cloud
-   - Utiliser des modèles HuggingFace localement
-   - Deux options: vLLM et Transformers
-   - Configuration matérielle et optimisation
-
-### 📋 Documentation générale
-
-- [ROADMAP.md](ROADMAP.md) - Feuille de route détaillée du projet
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture technique
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Guide de contribution
-- [docs/](docs/) - Documentation technique détaillée
+Le répertoire [archive/](archive/) contient d'anciens guides, conservés pour
+mémoire. Ils décrivent en partie du code qui n'existe plus (providers
+Transformers et vLLM) : préférez `docs/` en cas de contradiction.
 
 ## 🛠️ Technologies
 
 **Core**
-- Python 3.10-3.11 (⚠️ 3.13 non supporté - utilisez Docker)
-- FastAPI (API backend)
-- PostgreSQL (base de données)
-- Docker (environnement isolé)
+- Python 3.10+
+- SQLAlchemy + SQLite (mémoire long terme, aucun serveur à installer)
+- rich (interface en ligne de commande)
+- aiohttp (client du serveur LLM local)
 
-**AI/ML**
-- OpenAI API / Claude (LLM cloud)
-- **Nouveau !** Modèles locaux HuggingFace (vLLM, Transformers)
-- LangChain (framework)
-- Whisper (STT)
-- Coqui TTS (TTS)
-- ChromaDB (vector database)
+**LLM**
+- llama.cpp / Ollama pour l'inférence locale
+- API OpenAI et Anthropic en option
 
-**Gaming**
-- PyAutoGUI (automation)
-- OpenCV (computer vision)
-- Stable-Baselines3 (RL)
-
-**Robotique** (futur)
-- ROS 2
-- PyBullet
+**À venir** (voir ROADMAP.md)
+- Piper (TTS) et faster-whisper (STT) — phase 2
+- fastembed + sqlite-vec (mémoire sémantique) — phase 3
+- FastAPI (API et interface web) — phase 4
+- PyAutoGUI, OpenCV, Stable-Baselines3 (gaming) — phase 5
+- ROS 2, PyBullet (robotique) — phase 6
 
 ## 🎯 État Actuel
 
-🟢 **Phase 1 en cours**: Fondations de base
+🟢 **Phase 1 livrée**: Fondations de base
 
 - [x] Initialisation du dépôt
 - [x] Documentation de la roadmap
-- [ ] Structure du projet
-- [ ] Moteur conversationnel de base
-- [ ] Système de mémoire initial
+- [x] Structure du projet
+- [x] Moteur conversationnel de base (local, OpenAI, Claude)
+- [x] Système de mémoire initial (court terme en mémoire, long terme SQLite)
+- [x] CLI avec affichage au fil de la génération
+- [x] Suite de tests
+
+🟡 **En cours**: la mémoire long terme est écrite mais pas encore relue au
+démarrage. Reprise de session, budget de contexte en tokens et mémoire
+sémantique constituent la suite (voir ROADMAP.md).
 
 ## 🤝 Contribution
 
@@ -165,7 +181,7 @@ Les contributions sont les bienvenues ! Pour contribuer:
 4. Push vers la branche (`git push origin feature/AmazingFeature`)
 5. Ouvrir une Pull Request
 
-Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour plus de détails (à venir).
+Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour plus de détails.
 
 ## 📝 Licence
 

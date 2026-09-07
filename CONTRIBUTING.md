@@ -46,9 +46,10 @@ Nous accueillons plusieurs types de contributions :
 
 ### Prérequis
 
-- Python 3.10 ou supérieur
+- Python 3.10 ou supérieur (3.13 inclus)
 - Git
-- pip ou poetry
+- pip
+- (Optionnel) un serveur llama.cpp ou Ollama pour tester en local
 - (Optionnel) Docker
 
 ### Installation
@@ -65,21 +66,36 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 # 3. Installer les dépendances de développement
 pip install -r requirements-dev.txt
 
-# 4. Installer les pre-commit hooks
-pre-commit install
-
-# 5. Copier le fichier d'environnement
+# 4. Copier le fichier d'environnement
 cp .env.example .env
-# Éditer .env avec vos configurations locales
 ```
 
-### Configuration des APIs (optionnel pour le développement)
+Les valeurs par défaut de `.env.example` fonctionnent telles quelles : SQLite
+pour la base, et un serveur LLM local sur le port 8080. Il n'y a rien à
+remplir pour démarrer.
+
+### Choisir un fournisseur LLM
+
+Par défaut, Lotusette parle à un serveur local compatible OpenAI. Aucune clé
+d'API n'est nécessaire :
+
+```bash
+llama-server -hf mistralai/Ministral-3-3B-Instruct-2512-GGUF:Q4_K_M \
+  -c 8192 --port 8080
+```
+
+Voir [docs/MODELS.md](docs/MODELS.md) pour le choix du modèle.
+
+Pour utiliser une API distante à la place :
 
 ```bash
 # Dans .env
+LLM_PROVIDER=openai        # ou claude
 OPENAI_API_KEY=your_key_here
-# ... autres clés API selon vos besoins
 ```
+
+La suite de tests ne requiert ni serveur local ni clé d'API : les appels
+réseau sont simulés.
 
 ### Vérification de l'installation
 
@@ -103,8 +119,9 @@ Nous suivons les conventions Python standard avec quelques spécificités :
 #### Style
 
 - **PEP 8** pour le style de code
-- **Black** pour le formatage (ligne max 100 caractères)
-- **isort** pour l'organisation des imports
+- **ruff** pour le formatage et le lint (ligne max 100 caractères). Il remplace
+  black, isort, flake8 et pylint : un seul outil, une seule configuration dans
+  `pyproject.toml`
 - **Type hints** requis pour les fonctions publiques
 
 ```python
@@ -233,21 +250,20 @@ def test_process_message_with_valid_input_returns_response():
 Avant de soumettre :
 
 ```bash
-# Formater le code
-black .
-isort .
+# Formater le code et corriger ce qui peut l'être
+make format          # ruff format + ruff check --fix
 
-# Vérifier le style
-flake8
-pylint lotusette
+# Vérifier style et imports (bloquant, doit rester vert)
+make lint            # ruff check + ruff format --check
 
-# Vérifier les types
-mypy lotusette
-
-# Ou utiliser make
-make format
-make lint
+# Vérifier les types (indicatif)
+make typecheck       # mypy
 ```
+
+`make typecheck` remonte aujourd'hui une trentaine d'erreurs préexistantes,
+principalement des types SQLAlchemy et des `**kwargs` passés aux SDK. Elles
+sont à résorber progressivement ; la cible n'est donc pas bloquante. Ne pas en
+ajouter de nouvelles.
 
 ## Processus de Pull Request
 

@@ -2,7 +2,6 @@
 
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
 
 from sqlalchemy.orm import Session
 
@@ -23,13 +22,13 @@ class LongTermMemory(BaseMemory):
         """
         self.database_url = database_url
         self.engine, self.SessionLocal = init_db(database_url)
-        logger.info(f"Initialized long-term memory with database: {database_url}")
+        logger.debug(f"Initialized long-term memory with database: {database_url}")
 
     def _get_session(self) -> Session:
         """Get a database session."""
         return self.SessionLocal()
 
-    async def add_message(self, role: str, content: str, session_id: Optional[str] = None) -> None:
+    async def add_message(self, role: str, content: str, session_id: str | None = None) -> None:
         """Add a message to long-term storage.
 
         Args:
@@ -56,8 +55,8 @@ class LongTermMemory(BaseMemory):
             db.close()
 
     async def get_messages(
-        self, session_id: Optional[str] = None, limit: Optional[int] = None
-    ) -> List[ConversationMessage]:
+        self, session_id: str | None = None, limit: int | None = None
+    ) -> list[ConversationMessage]:
         """Retrieve messages from long-term storage.
 
         Args:
@@ -96,7 +95,7 @@ class LongTermMemory(BaseMemory):
         finally:
             db.close()
 
-    async def clear(self, session_id: Optional[str] = None) -> None:
+    async def clear(self, session_id: str | None = None) -> None:
         """Clear messages from long-term storage.
 
         Args:
@@ -124,8 +123,8 @@ class LongTermMemory(BaseMemory):
             db.close()
 
     async def get_context(
-        self, session_id: Optional[str] = None, max_messages: int = 10
-    ) -> List[Dict[str, str]]:
+        self, session_id: str | None = None, max_messages: int = 10
+    ) -> list[dict[str, str]]:
         """Get conversation context for LLM.
 
         Args:
@@ -138,7 +137,7 @@ class LongTermMemory(BaseMemory):
         messages = await self.get_messages(session_id=session_id, limit=max_messages)
         return [{"role": m.role, "content": m.content} for m in messages]
 
-    async def get_all_sessions(self) -> List[str]:
+    async def get_all_sessions(self) -> list[str]:
         """Get list of all session IDs.
 
         Returns:

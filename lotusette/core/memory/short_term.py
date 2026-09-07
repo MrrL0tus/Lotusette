@@ -3,7 +3,6 @@
 import logging
 from collections import deque
 from datetime import datetime
-from typing import Dict, List, Optional
 
 from .base import BaseMemory, ConversationMessage
 
@@ -23,7 +22,7 @@ class ShortTermMemory(BaseMemory):
         self._messages: deque = deque(maxlen=max_messages)
         logger.info(f"Initialized short-term memory with capacity: {max_messages}")
 
-    async def add_message(self, role: str, content: str, session_id: Optional[str] = None) -> None:
+    async def add_message(self, role: str, content: str, session_id: str | None = None) -> None:
         """Add a message to short-term memory.
 
         Args:
@@ -38,8 +37,8 @@ class ShortTermMemory(BaseMemory):
         logger.debug(f"Added {role} message to short-term memory (total: {len(self._messages)})")
 
     async def get_messages(
-        self, session_id: Optional[str] = None, limit: Optional[int] = None
-    ) -> List[ConversationMessage]:
+        self, session_id: str | None = None, limit: int | None = None
+    ) -> list[ConversationMessage]:
         """Retrieve messages from short-term memory.
 
         Args:
@@ -61,7 +60,7 @@ class ShortTermMemory(BaseMemory):
 
         return messages
 
-    async def clear(self, session_id: Optional[str] = None) -> None:
+    async def clear(self, session_id: str | None = None) -> None:
         """Clear messages from short-term memory.
 
         Args:
@@ -78,8 +77,8 @@ class ShortTermMemory(BaseMemory):
             logger.info(f"Cleared messages for session {session_id} from short-term memory")
 
     async def get_context(
-        self, session_id: Optional[str] = None, max_messages: int = 10
-    ) -> List[Dict[str, str]]:
+        self, session_id: str | None = None, max_messages: int = 10
+    ) -> list[dict[str, str]]:
         """Get conversation context for LLM.
 
         Args:
@@ -92,7 +91,7 @@ class ShortTermMemory(BaseMemory):
         messages = await self.get_messages(session_id=session_id, limit=max_messages)
         return [{"role": m.role, "content": m.content} for m in messages]
 
-    def get_message_count(self, session_id: Optional[str] = None) -> int:
+    def get_message_count(self, session_id: str | None = None) -> int:
         """Get the count of messages in memory.
 
         Args:

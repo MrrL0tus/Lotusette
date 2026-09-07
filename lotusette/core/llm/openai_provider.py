@@ -1,7 +1,7 @@
 """OpenAI LLM provider implementation."""
 
 import logging
-from typing import AsyncIterator, List, Optional
+from collections.abc import AsyncIterator
 
 from openai import AsyncOpenAI, OpenAIError
 
@@ -32,7 +32,7 @@ class OpenAIProvider(BaseLLM):
         self.client = AsyncOpenAI(api_key=api_key)
         logger.info(f"Initialized OpenAI provider with model: {model}")
 
-    async def generate(self, messages: List[Message], stream: bool = False) -> LLMResponse:
+    async def generate(self, messages: list[Message], stream: bool = False) -> LLMResponse:
         """Generate a response using OpenAI API.
 
         Args:
@@ -75,7 +75,7 @@ class OpenAIProvider(BaseLLM):
             logger.error(f"Unexpected error in OpenAI provider: {e}")
             raise
 
-    async def generate_stream(self, messages: List[Message]) -> AsyncIterator[str]:
+    async def generate_stream(self, messages: list[Message]) -> AsyncIterator[str]:
         """Generate a streaming response using OpenAI API.
 
         Args:

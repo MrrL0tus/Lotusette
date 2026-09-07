@@ -1,7 +1,5 @@
 """Unit tests for LLM base classes."""
 
-import pytest
-
 from lotusette.core.llm import LLMResponse, Message
 
 

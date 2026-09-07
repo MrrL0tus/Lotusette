@@ -1,3 +1,15 @@
+> [!WARNING]
+> **Document obsolète, conservé pour mémoire.**
+>
+> Il décrit les providers `local-transformers` et `local-vllm`, qui ont été
+> remplacés par un provider unique `local` parlant à llama.cpp ou Ollama.
+> `torch`, `transformers` et `bitsandbytes` ne sont plus des dépendances, et
+> Docker n'est plus nécessaire pour contourner une contrainte de version de
+> Python.
+>
+> Documentation à jour : [../README.md](../README.md) et
+> [../docs/MODELS.md](../docs/MODELS.md).
+
 # 🚀 Guide de Démarrage Rapide - Utiliser un LLM Local en 5 Minutes
 
 Ce guide ultra-rapide vous permet de lancer Lotusette avec un modèle local HuggingFace en quelques minutes.

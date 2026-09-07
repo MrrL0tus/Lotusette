@@ -1,10 +1,8 @@
 """Unit tests for short-term memory."""
 
-from datetime import datetime
-
 import pytest
 
-from lotusette.core.memory import ConversationMessage, ShortTermMemory
+from lotusette.core.memory import ShortTermMemory
 
 
 @pytest.mark.asyncio

@@ -58,14 +58,16 @@ case "${1:-help}" in
         ;;
     
     start)
-        echo "🚀 Démarrage des services..."
-        $COMPOSE_CMD up -d postgres redis
-        echo "⏳ Attente que les services soient prêts..."
-        sleep 5
-        echo "✅ Services démarrés!"
+        # Plus de postgres ni de redis : aucun code ne les utilise, la mémoire
+        # long terme tient dans un fichier SQLite.
+        echo "🚀 Démarrage du service..."
+        $COMPOSE_CMD up -d lotusette
+        echo "✅ Service démarré!"
+        echo ""
+        echo "Rappel: le modèle tourne sur l'hôte, pas dans le conteneur."
+        echo "  llama-server -hf <modèle> -c 8192 --port 8080 --host 0.0.0.0"
         echo ""
         echo "Pour lancer l'interface CLI: ./docker-helper.sh cli"
-        echo "Pour lancer l'API: ./docker-helper.sh api"
         ;;
     
     stop)

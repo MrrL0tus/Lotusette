@@ -1,66 +1,38 @@
-version: '3.8'
+# Lotusette — exécution en conteneur (optionnelle).
+#
+# PostgreSQL et Redis ont été retirés : aucun code ne les utilise. La mémoire
+# long terme tient dans un fichier SQLite, dans le volume lotusette-data.
+# Ils reviendront si un déploiement multi-utilisateurs le justifie.
+#
+# Le modèle tourne sur l'hôte :
+#   llama-server -hf <modèle> -c 8192 --port 8080 --host 0.0.0.0
 
 services:
-  # Service principal Lotusette
   lotusette:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: lotusette
     volumes:
-      # Monter le code source pour le développement
+      # Code source monté pour le développement.
       - .:/app
-      # Persister les données et modèles
-      - lotusette-data:/app/data
-      # Monter le fichier .env
-      - ./.env:/app/.env:ro
+      # Données persistantes (base SQLite, modèles, embeddings).
+      - lotusette-data:/data
     ports:
-      - "8000:8000"  # API
-      - "8080:8080"  # Web UI (future)
+      - "8000:8000"  # API, étape E7
     environment:
-      - PYTHONUNBUFFERED=1
-    # Utiliser stdin pour l'interaction CLI
+      PYTHONUNBUFFERED: "1"
+      LOTUSETTE_DATA_DIR: /data
+      # Joindre le serveur d'inférence qui tourne sur la machine hôte.
+      LOCAL_LLM_BASE_URL: "http://host.docker.internal:8080/v1"
+    extra_hosts:
+      # Nécessaire sous Linux, où host.docker.internal n'existe pas par défaut.
+      - "host.docker.internal:host-gateway"
+    # Nécessaire pour l'interaction avec le CLI.
     stdin_open: true
     tty: true
-    # Commande par défaut
     command: python -m lotusette.ui.cli
-
-  # Service PostgreSQL pour la mémoire à long terme
-  postgres:
-    image: postgres:15-alpine
-    container_name: lotusette-postgres
-    environment:
-      POSTGRES_DB: lotusette
-      POSTGRES_USER: lotusette
-      POSTGRES_PASSWORD: lotusette_password
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U lotusette"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # Service Redis pour le cache et la mémoire court terme
-  redis:
-    image: redis:7-alpine
-    container_name: lotusette-redis
-    volumes:
-      - redis-data:/data
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   lotusette-data:
-    driver: local
-  postgres-data:
-    driver: local
-  redis-data:
     driver: local

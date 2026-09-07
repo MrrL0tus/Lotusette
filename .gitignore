@@ -134,10 +134,15 @@ dmypy.json
 Thumbs.db
 
 # Project specific
-lotusette/data/conversations/*.db
-lotusette/data/models/*.bin
-lotusette/data/models/*.pt
-lotusette/data/embeddings/*.index
+# Les données vivent dans data/, à côté du package et non dedans.
+data/conversations/*.db
+data/conversations/*.db-wal
+data/conversations/*.db-shm
+data/models/*
+!data/models/.gitkeep
+data/embeddings/*
+!data/embeddings/.gitkeep
+*.gguf
 *.wav
 *.mp3
 *.pkl

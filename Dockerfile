@@ -1,48 +1,35 @@
-# Lotusette - Dockerfile
-# Force l'utilisation de Python 3.11 pour compatibilité avec toutes les dépendances
-# Note: TTS nécessite Python <3.12, d'où le choix de Python 3.11
+# Lotusette — image de commodité.
+#
+# Docker avait été introduit pour contourner une dépendance (Coqui TTS) qui
+# imposait Python < 3.12. Cette dépendance a été retirée : l'installation
+# locale fonctionne sur toutes les versions supportées, et cette image n'est
+# plus qu'une commodité.
+#
+# Le modèle ne tourne PAS dans ce conteneur : Lotusette parle à un serveur
+# llama.cpp ou Ollama sur l'hôte. Voir docs/MODELS.md.
 
-FROM python:3.11-slim
+FROM python:3.13-slim
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Installer les dépendances système nécessaires
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    git \
-    ffmpeg \
-    libsndfile1 \
-    portaudio19-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copier d'abord les dépendances, pour profiter du cache de couches.
+COPY requirements.txt pyproject.toml ./
 
-# Copier les fichiers de dépendances
-COPY requirements.txt requirements-dev.txt ./
-COPY pyproject.toml ./
-
-# Installer les dépendances Python
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copier le code source
 COPY . .
 
-# Installer le package en mode développement
-RUN pip install -e .
+RUN pip install --no-cache-dir --no-deps -e .
 
-# Créer les répertoires pour les données et modèles
-RUN mkdir -p /app/data/models /app/data/cache /app/data/db
-
-# Exposer les ports
-# 8000: API FastAPI
-# 8080: Interface Web (future)
-EXPOSE 8000 8080
-
-# Variables d'environnement par défaut
+# Les données vivent hors du package et sont montées en volume.
 ENV PYTHONUNBUFFERED=1 \
-    LOTUSETTE_DATA_DIR=/app/data \
-    LOTUSETTE_MODELS_DIR=/app/data/models \
-    LOTUSETTE_CACHE_DIR=/app/data/cache
+    LOTUSETTE_DATA_DIR=/data
 
-# Commande par défaut (CLI)
+# Le serveur d'inférence tourne sur l'hôte, pas ici.
+ENV LOCAL_LLM_BASE_URL=http://host.docker.internal:8080/v1
+
+# 8000 : API FastAPI (étape E7, pas encore implémentée)
+EXPOSE 8000
+
 CMD ["python", "-m", "lotusette.ui.cli"]

@@ -2,7 +2,7 @@
 
 import pytest
 
-from lotusette.core.memory import ConversationMessage, LongTermMemory
+from lotusette.core.memory import LongTermMemory
 
 
 @pytest.mark.asyncio
