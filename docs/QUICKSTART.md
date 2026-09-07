@@ -1,302 +1,167 @@
-# 🚀 Guide de Démarrage Rapide - Lotusette
+# Quick Start Guide - Lotusette
 
-## 🎉 Félicitations!
+Ce guide vous aidera à démarrer rapidement avec Lotusette.
 
-L'implémentation de la Phase 1 est maintenant terminée! Lotusette dispose de:
-
-- ✅ **Intégration LLM** (OpenAI & Claude/Anthropic)
-- ✅ **Système de mémoire** (court et long terme)
-- ✅ **CLI fonctionnel** pour conversations
-- ✅ **Suite de tests complète** (52 tests passés!)
-
-## 📋 Prérequis
+## Prérequis
 
 - Python 3.10 ou supérieur
-- Une clé API OpenAI **OU** Anthropic Claude
+- Git
+- (Optionnel) Compte OpenAI ou Anthropic pour l'API LLM
 
-## 🛠️ Installation
+## Installation
 
-### 1. Cloner et installer les dépendances
+### 1. Cloner le dépôt
 
 ```bash
 git clone https://github.com/MrrL0tus/Lotusette.git
 cd Lotusette
+```
 
-# Créer un environnement virtuel
+### 2. Créer un environnement virtuel
+
+**Linux/Mac:**
+```bash
 python -m venv venv
-source venv/bin/activate  # Sur Windows: venv\Scripts\activate
+source venv/bin/activate
+```
 
-# Installer les dépendances
+**Windows:**
+```cmd
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Installer les dépendances
+
+**Installation de base:**
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configuration
+**Installation pour le développement:**
+```bash
+pip install -r requirements-dev.txt
+```
 
-Copiez le fichier `.env.example` vers `.env` et configurez vos clés API:
+### 4. Configuration
 
+Copier le fichier d'exemple de configuration:
 ```bash
 cp .env.example .env
 ```
 
-Éditez le fichier `.env` et ajoutez votre clé API:
-
-#### Pour OpenAI:
-```env
+Éditer `.env` et ajouter vos clés API:
+```bash
+# Exemple de configuration minimale
+OPENAI_API_KEY=sk-your-key-here
 LLM_PROVIDER=openai
-OPENAI_API_KEY=sk-votre-cle-api-ici
-OPENAI_MODEL=gpt-4-turbo-preview
 ```
 
-#### Pour Claude (Anthropic):
-```env
-LLM_PROVIDER=claude
-ANTHROPIC_API_KEY=sk-ant-votre-cle-api-ici
-ANTHROPIC_MODEL=claude-3-opus-20240229
-```
+## Utilisation
 
-## 🎮 Utilisation
+### Interface CLI
 
-### Lancer Lotusette
+Lancer l'interface en ligne de commande:
 
 ```bash
 python -m lotusette.ui.cli
 ```
 
-Ou utilisez le Makefile:
+Ou avec make:
 ```bash
 make run
 ```
 
-### Commandes disponibles
+### Tests
 
-Une fois le CLI lancé:
-
-- **Tapez n'importe quoi** pour converser avec Lotusette
-- `/help` - Afficher l'aide et les commandes
-- `/clear` - Effacer la mémoire de la session actuelle
-- `/history` - Voir l'historique de la conversation
-- `/stats` - Voir les statistiques (nombre de messages, session ID, etc.)
-- `/exit` ou `/quit` - Quitter
-
-### Exemple de conversation
-
-```
-Vous: Bonjour Lotusette! Comment vas-tu?
-Lotusette: Bonjour! Je vais très bien, merci! 🌸 Comment puis-je t'aider aujourd'hui?
-
-Vous: Parle-moi de toi
-Lotusette: Je suis Lotusette, une assistante IA conversationnelle...
-```
-
-## 🧪 Tests
-
-### Exécuter tous les tests
-
+Lancer les tests:
 ```bash
-# Avec pytest
-pytest tests/
+# Tous les tests
+pytest
 
-# Ou avec le Makefile
+# Tests avec couverture
 make test
+
+# Tests verbeux
+make test-verbose
 ```
 
-### Tests de démonstration
+### Développement
 
-Un script de test manuel est disponible pour vérifier que tout fonctionne:
-
+Format du code:
 ```bash
-python tests/manual_test_cli.py
+make format
 ```
 
-Ce script teste:
-- ✅ Le système de mémoire court terme
-- ✅ Les commandes CLI
-- ✅ L'effacement de mémoire
-- ✅ La mémoire à long terme (SQLite)
-- ✅ Le gestionnaire de prompts
-
-### Résultats des tests
-
-```
-================================================= test session starts ==================================================
-...
-52 passed, 6 warnings in 1.38s
-============================================
-```
-
-## 🏗️ Architecture
-
-```
-lotusette/
-├── core/
-│   ├── llm/                    # Intégration LLM
-│   │   ├── base.py            # Interface de base
-│   │   ├── openai_provider.py # Provider OpenAI
-│   │   ├── claude_provider.py # Provider Claude
-│   │   ├── factory.py         # Factory pour créer providers
-│   │   └── prompt_manager.py  # Gestion des prompts
-│   ├── memory/                 # Système de mémoire
-│   │   ├── base.py            # Interface de base
-│   │   ├── short_term.py      # Mémoire court terme
-│   │   ├── long_term.py       # Mémoire long terme
-│   │   └── models.py          # Modèles de base de données
-│   └── config.py              # Configuration
-├── ui/
-│   └── cli.py                 # Interface CLI
-└── data/                      # Données et conversations
-```
-
-## 📊 Fonctionnalités Implémentées
-
-### 1. Intégration LLM
-
-- ✅ Interface abstraite pour providers LLM
-- ✅ Support OpenAI (GPT-4, GPT-3.5)
-- ✅ Support Anthropic Claude (Claude 3)
-- ✅ Génération de réponses (sync et stream)
-- ✅ Gestion des prompts système
-- ✅ Factory pattern pour création de providers
-
-### 2. Système de Mémoire
-
-**Mémoire Court Terme:**
-- ✅ Stockage en mémoire des conversations récentes
-- ✅ Limite configurable (par défaut: 100 messages)
-- ✅ Filtrage par session
-- ✅ Gestion du contexte pour LLM
-
-**Mémoire Long Terme:**
-- ✅ Persistance avec SQLite/PostgreSQL
-- ✅ Stockage de toutes les conversations
-- ✅ Requêtes par session
-- ✅ Gestion de multiples sessions
-
-### 3. CLI Fonctionnel
-
-- ✅ Interface riche et colorée (via `rich`)
-- ✅ Boucle de conversation interactive
-- ✅ Commandes intégrées (/help, /clear, /history, /stats)
-- ✅ Gestion d'erreurs robuste
-- ✅ Indicateurs visuels (spinner pendant génération)
-- ✅ Affichage du nombre de tokens utilisés
-
-### 4. Suite de Tests
-
-**Tests Unitaires:**
-- ✅ Tests pour classes Message et LLMResponse
-- ✅ Tests pour OpenAI provider (avec mocks)
-- ✅ Tests pour Claude provider (avec mocks)
-- ✅ Tests pour LLM factory
-- ✅ Tests pour prompt manager
-- ✅ Tests pour mémoire court terme
-- ✅ Tests pour mémoire long terme
-
-**Tests d'Intégration:**
-- ✅ Tests CLI complets
-- ✅ Tests d'initialisation
-- ✅ Tests de flux de conversation
-- ✅ Tests de commandes
-- ✅ Tests de persistance
-
-## 🎤 Prochaines Étapes - Phase 2: Voix
-
-Pour ajouter des capacités vocales à Lotusette, consultez:
-
-📖 **[Guide des Voix pour Lotusette](docs/VOICE_RECOMMENDATIONS.md)**
-
-Ce guide contient:
-- 🎯 Recommandations de TTS (Text-to-Speech)
-- 🔊 Comparatif des solutions vocales
-- 💰 Options gratuites et payantes
-- 🎨 Comment créer une voix unique pour Lotusette
-- 📝 Exemples de code d'intégration
-
-**Top recommandations:**
-1. **ElevenLabs** - Qualité professionnelle avec voice cloning
-2. **Coqui TTS** - Gratuit et open-source avec XTTS-v2
-3. **Azure TTS** - Solution Microsoft robuste
-4. **PlayHT** - Excellent compromis
-
-## 🐛 Dépannage
-
-### Erreur: Module not found
-
+Vérification du code:
 ```bash
-pip install -r requirements.txt
+make lint
 ```
 
-### Erreur: API key not configured
+## Structure du Projet
 
-Vérifiez votre fichier `.env`:
+```
+Lotusette/
+├── lotusette/          # Code source principal
+│   ├── core/          # Fonctionnalités principales
+│   ├── voice/         # Capacités vocales (futur)
+│   ├── web/           # Accès web (futur)
+│   ├── gaming/        # Gaming (futur)
+│   ├── api/           # API REST (futur)
+│   └── ui/            # Interfaces utilisateur
+├── tests/             # Tests
+├── docs/              # Documentation
+├── .env.example       # Exemple de configuration
+├── requirements.txt   # Dépendances
+└── README.md          # Ce fichier
+```
+
+## Prochaines Étapes
+
+1. **Consultez la Roadmap**: Lisez [ROADMAP.md](../ROADMAP.md) pour comprendre la vision du projet
+2. **Architecture**: Explorez [ARCHITECTURE.md](../ARCHITECTURE.md) pour les détails techniques
+3. **Contribuer**: Voir [CONTRIBUTING.md](../CONTRIBUTING.md) pour contribuer au projet
+
+## Dépannage
+
+### Problèmes d'installation
+
+**Erreur: command 'gcc' not found**
 ```bash
-cat .env | grep API_KEY
+# Ubuntu/Debian
+sudo apt-get install build-essential
+
+# macOS
+xcode-select --install
 ```
 
-### Tests qui échouent
-
-Assurez-vous d'avoir installé les dépendances de développement:
+**Erreur lors de l'installation de PyAudio**
 ```bash
-pip install pytest pytest-asyncio pytest-mock
+# Ubuntu/Debian
+sudo apt-get install portaudio19-dev
+
+# macOS
+brew install portaudio
 ```
 
-### Base de données
+### Problèmes de configuration
 
-La base de données SQLite est créée automatiquement dans:
-```
-lotusette/data/conversations/lotusette.db
-```
+**Erreur: OPENAI_API_KEY not found**
+- Vérifiez que le fichier `.env` existe et contient votre clé API
+- Assurez-vous que la clé est valide
 
-Pour réinitialiser:
-```bash
-rm -rf lotusette/data/conversations/*.db
-```
+### Obtenir de l'aide
 
-## 📚 Documentation
+- 📝 Ouvrez une [issue sur GitHub](https://github.com/MrrL0tus/Lotusette/issues)
+- 💬 Consultez les [GitHub Discussions](https://github.com/MrrL0tus/Lotusette/discussions)
 
-- [ROADMAP.md](ROADMAP.md) - Feuille de route complète du projet
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture technique détaillée
-- [VOICE_RECOMMENDATIONS.md](docs/VOICE_RECOMMENDATIONS.md) - Guide des solutions vocales
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Guide de contribution
+## Ressources
 
-## 🤝 Contribution
-
-Les contributions sont bienvenues! Pour contribuer:
-
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
-
-## 📝 Changelog
-
-### Version 0.1.0 - Phase 1 Complétée (2024)
-
-**Nouvelles Fonctionnalités:**
-- ✅ Intégration LLM (OpenAI & Claude)
-- ✅ Système de mémoire (court & long terme)
-- ✅ CLI fonctionnel avec commandes
-- ✅ Suite de tests complète (52 tests)
-- ✅ Documentation vocale
-
-**Améliorations:**
-- Architecture modulaire et extensible
-- Code formaté avec Black et isort
-- Tests avec 100% de couverture des fonctionnalités critiques
-
-## 🎯 Métriques de Succès Phase 1
-
-- ✅ Conversation textuelle fluide et cohérente
-- ✅ Temps de réponse < 2 secondes
-- ✅ Rétention du contexte sur 10+ échanges
-- ✅ Tests automatisés passants
-- ✅ Documentation complète
-
-## 📧 Support
-
-- GitHub Issues: [github.com/MrrL0tus/Lotusette/issues](https://github.com/MrrL0tus/Lotusette/issues)
-- Discussions: [github.com/MrrL0tus/Lotusette/discussions](https://github.com/MrrL0tus/Lotusette/discussions)
+- [Documentation complète](./README.md)
+- [Roadmap du projet](../ROADMAP.md)
+- [Architecture technique](../ARCHITECTURE.md)
+- [Guide de contribution](../CONTRIBUTING.md)
 
 ---
 
-**Bon codage avec Lotusette! 🌸**
+Bon développement avec Lotusette! 🌸
