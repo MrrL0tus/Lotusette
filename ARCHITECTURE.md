@@ -1,5 +1,31 @@
 # Architecture Technique - Lotusette
 
+> [!IMPORTANT]
+> **Ce document décrit une architecture cible, pas l'état du dépôt.**
+>
+> Il sert de direction à long terme. Une grande partie de ce qui suit
+> (PostgreSQL, Redis, Celery, microservices, Kubernetes, Terraform, services
+> vocaux, gaming, robotique) n'est **pas** implémentée et ne le sera pas avant
+> les phases correspondantes de [ROADMAP.md](ROADMAP.md).
+>
+> **Ce qui existe réellement aujourd'hui :**
+>
+> | Composant | État |
+> |---|---|
+> | `core/llm/` | Implémenté — providers `local` (llama.cpp/Ollama), `openai`, `claude` |
+> | `core/llm/prompt_manager.py` | Implémenté — prompt système en dur, à externaliser |
+> | `core/memory/short_term.py` | Implémenté — `deque` bornée en mémoire |
+> | `core/memory/long_term.py` | Implémenté — SQLAlchemy sur SQLite, en écriture seule pour l'instant |
+> | `ui/cli.py` | Implémenté — boucle conversationnelle, affichage au fil de la génération |
+> | `core/llm/token_manager.py` | **Absent** — le contexte est tronqué par nombre de messages |
+> | `core/personality/` | **Vide** |
+> | `core/tools/` | **Vide** |
+> | `api/`, `web/`, `voice/`, `gaming/`, `robotics/` | **Vides** |
+>
+> La base est SQLite, pas PostgreSQL. Il n'y a ni Redis, ni Celery, ni
+> LangChain : ces dépendances ont été retirées faute de code les utilisant.
+> L'état détaillé de la phase 1 est dans [docs/phase1.md](docs/phase1.md).
+
 ## Vue d'ensemble de l'architecture
 
 Lotusette est conçue comme une architecture modulaire et extensible permettant l'ajout progressif de fonctionnalités tout en maintenant une base solide.
@@ -68,7 +94,7 @@ core/llm/
 ├── claude_provider.py   # Implémentation Anthropic
 ├── local_provider.py    # Modèles locaux (LLaMA, etc.)
 ├── prompt_manager.py    # Gestion des prompts système
-└── token_manager.py     # Gestion des tokens et contexte
+└── token_manager.py     # ❌ non implémenté — troncature par nombre de messages
 ```
 
 **Fonctionnalités**:
@@ -94,7 +120,7 @@ core/memory/
 
 **Types de mémoire**:
 - **Court terme**: Contexte de conversation actuel (in-memory)
-- **Long terme**: Base de données des conversations (PostgreSQL)
+- **Long terme**: Base de données des conversations (SQLite aujourd'hui ; PostgreSQL seulement si un déploiement multi-utilisateurs le justifie)
 - **Épisodique**: Recherche sémantique dans l'historique (Vector DB)
 - **Procédurale**: Compétences et comportements appris
 

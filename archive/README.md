@@ -1,6 +1,23 @@
-# Archive - Documentation Lotusette
+# Archive — documentation historique
 
-Ce dossier contient la documentation détaillée de Lotusette, organisée par sujet pour faciliter la navigation et éviter de perdre l'information au fil des avancements du projet.
+> [!WARNING]
+> **Ces documents sont obsolètes et conservés pour mémoire.**
+>
+> Ils décrivent les providers `local-transformers` et `local-vllm`, remplacés
+> par un provider unique `local` qui parle à llama.cpp ou Ollama, ainsi qu'une
+> installation Docker qui n'est plus nécessaire. `torch`, `transformers`,
+> `bitsandbytes`, `langchain`, `chromadb`, `redis` et `celery` ne sont plus
+> des dépendances du projet.
+>
+> **En cas de contradiction, la documentation à jour fait foi :**
+>
+> | Sujet | Document à jour |
+> |---|---|
+> | Installation et démarrage | [../README.md](../README.md) |
+> | Choix du modèle local | [../docs/MODELS.md](../docs/MODELS.md) |
+> | État de la phase 1 | [../docs/phase1.md](../docs/phase1.md) |
+> | Contribution et outillage | [../CONTRIBUTING.md](../CONTRIBUTING.md) |
+> | Feuille de route | [../ROADMAP.md](../ROADMAP.md) |
 
 ## 📚 Guides disponibles
 
@@ -75,25 +92,6 @@ Documentation technique de l'implémentation Docker et modèles locaux.
 
 **Pour qui:** Développeurs et contributeurs voulant comprendre l'implémentation technique.
 
-## 🎯 Navigation rapide
-
-### Je veux...
-
-- **...tester rapidement un modèle local** → [Démarrage Ultra-Rapide](QUICKSTART_LOCAL_LLM.md) ⚡
-- **...une référence des commandes** → [Aide-Mémoire](CHEATSHEET.md) 📋
-- **...installer Lotusette de zéro** → [Guide de Démarrage IA](getting_started_ai.md)
-- **...résoudre un problème Python 3.13** → [Guide Docker](docker_setup.md)
-- **...utiliser un modèle local gratuit** → [Guide Modèles Locaux](local_models_guide.md)
-- **...comprendre les concepts de base** → [Guide de Démarrage IA](getting_started_ai.md)
-
-### J'ai un problème avec...
-
-- **...les dépendances Python** → [Guide Docker](docker_setup.md)
-- **...le téléchargement de modèles** → [Guide Modèles Locaux](local_models_guide.md) - Section Dépannage
-- **...la mémoire GPU (OOM)** → [Aide-Mémoire](CHEATSHEET.md) - Section Quantification
-- **...ma première conversation IA** → [Guide de Démarrage IA](getting_started_ai.md) - Section Problèmes courants
-- **...une commande oubliée** → [Aide-Mémoire](CHEATSHEET.md) ⚡
-
 ## 📅 Historique des documents
 
 | Document | Date de création | Dernière MAJ | Version |
@@ -107,15 +105,8 @@ Documentation technique de l'implémentation Docker et modèles locaux.
 
 ## 🔄 Mises à jour futures
 
-Ce dossier sera régulièrement mis à jour avec:
-- Nouveaux guides sur des fonctionnalités spécifiques
-- Tutoriels avancés
-- Retours d'expérience
-- Meilleures pratiques découvertes
-
-## 💡 Suggestions
-
-Vous avez des idées de guides qui manquent ? Ouvrez une [issue](https://github.com/MrrL0tus/Lotusette/issues) avec le tag `documentation`.
+Aucune. Ce dossier est figé. La documentation vivante est dans
+[`docs/`](../docs/) et à la racine du dépôt.
 
 ## 📖 Autres ressources
 
@@ -126,4 +117,5 @@ Vous avez des idées de guides qui manquent ? Ouvrez une [issue](https://github.
 
 ---
 
-**Objectif de ce dossier:** Centraliser et préserver la documentation pour faciliter l'apprentissage et le développement de Lotusette.
+**Objectif de ce dossier :** conserver la trace des choix techniques
+antérieurs. Ne pas suivre ces guides pour installer ou configurer le projet.
